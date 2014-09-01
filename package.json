@@ -1,0 +1,8 @@
+{
+  "name": "github-explorer",
+  "devDependencies": {
+    "gulp": "^3.8.7",
+    "jshint": "^2.5.5",
+    "less": "^1.7.4"
+  }
+}
