@@ -1,7 +1,7 @@
 var gulp = require('gulp'),
     jshint = require('gulp-jshint'),
     less = require('gulp-less'),
-    livereload = require('gulp-livereload');
+    connect = require('gulp-connect');
 
 var paths = {
   scripts: ['./app/app.js'],
@@ -22,11 +22,18 @@ gulp.task('less', function() {
     .pipe(gulp.dest('./app'));
 });
 
-gulp.task('watch', function() {
-  livereload.listen();
+gulp.task('connect', function() {
+  connect.server({
+    root: './app',
+    livereload: true
+  });
+});
+
+gulp.task('watch', ['connect'], function() {
   gulp.watch(paths.scripts, ['jshint']);
-  gulp.watch(paths.styles, ['less']);  
-  gulp.watch('app/**').on('change', livereload.changed);
+  gulp.watch(paths.styles, ['less']);
+
+  gulp.src('./app/**').pipe(connect.reload());
 });
 
 gulp.task('default', ['jshint', 'less', 'watch']);

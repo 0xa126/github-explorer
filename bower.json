@@ -1,0 +1,8 @@
+{
+  "name": "GitHub Explorer",
+  "version": "1.0.0",
+  "dependencies": {
+    "angular": "~1.2.25",
+    "angular-route": "~1.2.25"
+  }
+}

@@ -4,9 +4,16 @@
   <meta charset="utf-8">
   <title>GitHub Explorer</title>
   <link rel="stylesheet" type="text/css" href="app.css">
-  <script src="app.js"></script>
 </head>
 <body>
-	Hello, World! 
+	<div ng-view></div>
+  <script src="bower_components/angular/angular.js"></script>
+  <script src="bower_components/angular-route/angular-route.js"></script>
+
+  <script src="app.js"></script>
+  <script src="home/home.js"></script>
+  <script src="home/home-controller.js"></script>
+  <script src="dashboard/dashboard.js"></script>
+  <script src="dashboard/dashboard-controller.js"></script>
 </body>
 </html>
