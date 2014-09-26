@@ -4,11 +4,8 @@ var gulp = require('gulp');
 var ignore = require('gulp-ignore');
 var jshint = require('gulp-jshint');
 var less = require('gulp-less');
-var refresh = require('gulp-livereload');
-var livereload = require('connect-livereload');
+var livereload = require('gulp-livereload');
 var express = require('express');
-var livereloadPort = 35729;
-var serverPort = 8000;
 
 var paths = {
   scripts: ['./app/**/*.js'],
@@ -18,14 +15,13 @@ var paths = {
 
 // Set up an express server (but not starting it yet)
 var server = express();
-// Add live reload
-server.use(livereload({ port: livereloadPort }));
 // Use our 'app' folder as root folder
 server.use(express.static('./app'));
 // Always return index.html
 server.all('*', function(req, res) {
   res.sendFile('index.html', { root: './app' });
 });
+server.listen(8000);
 
 gulp.task('jshint', function() {
   return gulp.src(paths.scripts)
@@ -43,27 +39,11 @@ gulp.task('less', function() {
 });
 
 gulp.task('watch', function() {
-  gulp.watch(paths.scripts, ['jshint']).on('change', function(event) {
-    gulp.src(event.path)
-      .pipe(refresh());
-  });
+  livereload.listen();
 
-  gulp.watch(paths.styles, ['less']).on('change', function() {
-    gulp.src('./app/app.css')
-      .pipe(refresh());
-  });
-  
-  gulp.watch(paths.views, []).on('change', function(event) {
-    gulp.src(event.path)
-      .pipe(refresh());
-  });
+  gulp.watch(paths.scripts, ['jshint']).on('change', livereload.changed);
+  gulp.watch(paths.styles, ['less']).on('change', livereload.changed);
+  gulp.watch(paths.views, []).on('change', livereload.changed);
 });
 
-gulp.task('serve', function() {
-  // Start webserver
-  server.listen(serverPort);
-  // Start live reload
-  refresh.listen(livereloadPort);
-});
-
-gulp.task('default', ['jshint', 'less', 'serve', 'watch']);
+gulp.task('default', ['jshint', 'less', 'watch']);
