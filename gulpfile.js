@@ -22,6 +22,7 @@ server.all('*', function(req, res) {
   res.sendFile('index.html', { root: './app' });
 });
 server.listen(8000);
+livereload.listen();
 
 gulp.task('jshint', function() {
   return gulp.src(paths.scripts)
@@ -35,14 +36,13 @@ gulp.task('less', function() {
     .pipe(less({
       paths: []
     }))
-    .pipe(gulp.dest('./app'));
+    .pipe(gulp.dest('./app'))
+    .pipe(livereload());
 });
 
 gulp.task('watch', function() {
-  livereload.listen();
-
   gulp.watch(paths.scripts, ['jshint']).on('change', livereload.changed);
-  gulp.watch(paths.styles, ['less']).on('change', livereload.changed);
+  gulp.watch(paths.styles, ['less']);
   gulp.watch(paths.views, []).on('change', livereload.changed);
 });
 
