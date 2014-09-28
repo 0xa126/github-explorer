@@ -1,39 +1,49 @@
-var gulp = require('gulp'),
-    jshint = require('gulp-jshint'),
-    less = require('gulp-less'),
-    connect = require('gulp-connect');
+'use strict';
+
+var gulp = require('gulp');
+var ignore = require('gulp-ignore');
+var jshint = require('gulp-jshint');
+var less = require('gulp-less');
+var livereload = require('gulp-livereload');
+var express = require('express');
 
 var paths = {
-  scripts: ['./app/app.js'],
-  styles: ['./app/app.less']
+  scripts: ['./app/**/*.js'],
+  styles: ['./app/**/*.less'],
+  views: ['./app/**/*.html']
 };
+
+// Set up an express server (but not starting it yet)
+var server = express();
+// Use our 'app' folder as root folder
+server.use(express.static('./app'));
+// Always return index.html
+server.all('*', function(req, res) {
+  res.sendFile('index.html', { root: './app' });
+});
+server.listen(8000);
+livereload.listen();
 
 gulp.task('jshint', function() {
   return gulp.src(paths.scripts)
+    .pipe(ignore.exclude(/bower_components/))
     .pipe(jshint())
     .pipe(jshint.reporter('default'));
 });
 
 gulp.task('less', function() {
-  return gulp.src(paths.styles)
+  return gulp.src('./app/app.less')
     .pipe(less({
       paths: []
     }))
-    .pipe(gulp.dest('./app'));
+    .pipe(gulp.dest('./app'))
+    .pipe(livereload());
 });
 
-gulp.task('connect', function() {
-  connect.server({
-    root: './app',
-    livereload: true
-  });
-});
-
-gulp.task('watch', ['connect'], function() {
-  gulp.watch(paths.scripts, ['jshint']);
+gulp.task('watch', function() {
+  gulp.watch(paths.scripts, ['jshint']).on('change', livereload.changed);
   gulp.watch(paths.styles, ['less']);
-
-  gulp.src('./app/**').pipe(connect.reload());
+  gulp.watch(paths.views, []).on('change', livereload.changed);
 });
 
 gulp.task('default', ['jshint', 'less', 'watch']);
