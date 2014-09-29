@@ -1,3 +1,3 @@
 'use strict';
 
-angular.module('Dashboard', []);
+angular.module('Dashboard', ['Github']);

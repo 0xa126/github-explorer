@@ -1,5 +1,7 @@
 'use strict';
 
-angular.module('Home').controller('HomeCtrl', function() {
-	console.log('Hello from HomeCtrl');
+angular.module('Home').controller('HomeCtrl', function($scope, $location) {
+	$scope.showAllStarred = function() {
+    $location.search('username', $scope.username).path('/dashboard');
+  };
 });
